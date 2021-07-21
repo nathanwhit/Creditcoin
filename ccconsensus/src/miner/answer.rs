@@ -4,4 +4,5 @@ use crate::miner::Challenge;
 pub struct Answer {
   pub challenge: Challenge,
   pub nonce: u64,
+  pub score: u32,
 }

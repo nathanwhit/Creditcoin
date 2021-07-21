@@ -71,7 +71,7 @@ impl<'a> BlockHeader<'a> {
       self.consensus.nonce,
     );
 
-    if is_valid_proof_of_work(&hash, self.consensus.difficulty) {
+    if let Some(_) = is_valid_proof_of_work(&hash, self.consensus.difficulty) {
       Ok(())
     } else {
       Err(anyhow!(

@@ -6,6 +6,7 @@ extern crate log;
 
 use anyhow::Result;
 use ccconsensus::engine::PowEngine;
+use fern::colors::{Color, ColoredLevelConfig};
 use fern::Dispatch;
 use fern::FormatCallback;
 use log::LevelFilter;
@@ -22,12 +23,15 @@ fn fmt_log(out: FormatCallback, message: &Arguments, record: &Record) {
   let module: &str = record
     .module_path_static()
     .or_else(|| record.module_path())
-    .unwrap_or_else(|| "???");
-
+    .unwrap_or("???");
+  let colors = ColoredLevelConfig::new()
+    .info(Color::Green)
+    .debug(Color::Blue)
+    .trace(Color::BrightMagenta);
   out.finish(format_args!(
     "[{} {:<5} {}] {}",
     chrono::Utc::now().format(TIME_FMT),
-    record.level(),
+    colors.color(record.level()),
     module,
     message
   ))

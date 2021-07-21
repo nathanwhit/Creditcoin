@@ -28,10 +28,17 @@ impl Miner {
     })
   }
 
-  pub fn try_create_consensus(&self) -> Result<Option<Vec<u8>>> {
+  pub fn try_create_consensus(&mut self) -> Result<Option<Vec<u8>>> {
     // Drain answers from the worker thread
+    let mut found = false;
     while let Some(answer) = self.worker.recv() {
+      // if answer.nonce
+      found = true;
       self.answer.borrow_mut().replace(answer);
+    }
+
+    if found {
+      self.worker.cancel();
     }
 
     if let Some(answer) = self.answer.borrow().as_ref() {
@@ -85,7 +92,7 @@ impl Miner {
 impl Debug for Miner {
   fn fmt(&self, f: &mut Formatter) -> FmtResult {
     f.debug_struct("Miner")
-      .field("worker", &self.worker)
+      // .field("worker", &self.worker)
       .field("answer", &self.answer)
       .finish()
   }
